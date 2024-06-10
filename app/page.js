@@ -48,14 +48,28 @@ export default function Home() {
     }
   };
 
+  const generatePdf = async () => {
+    try {
+      const response = await fetch("/api/pdf?url=" + prediction.output[prediction.output.length - 1]);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "awesomeIron.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  }
+
   return (
     <div className="container max-w-2xl mx-auto p-5">
       <h1 className="py-6 text-center font-bold text-2xl">
-        Dream something with{" "}
-        <a href="https://replicate.com/stability-ai/sdxl?utm_source=project&utm_project=getting-started">
-          SDXL
-        </a>
+        IronPDF An Awesome Library for PDFs
       </h1>
+      <p>Enter prompt to generate an image, Then click Go Button</p>
 
       <form className="w-full flex" onSubmit={handleSubmit}>
         <input
@@ -67,6 +81,9 @@ export default function Home() {
         />
         <button className="button" type="submit">
           Go!
+        </button>
+        <button className="pdfButton" type="button" onClick={generatePdf}>
+          Generate PDF
         </button>
       </form>
 
